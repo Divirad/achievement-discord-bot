@@ -1,4 +1,4 @@
-package com.divirad.discordbot.achievement.main;
+package com.divirad.discordbot.achievement.bot;
 
 import java.util.List;
 
