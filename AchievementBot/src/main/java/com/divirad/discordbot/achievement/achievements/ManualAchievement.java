@@ -9,4 +9,8 @@ package com.divirad.discordbot.achievement.achievements;
  */
 public class ManualAchievement extends Achievement {
 
+	public ManualAchievement(String name, String description) {
+		super(name, description);
+	}
+
 }

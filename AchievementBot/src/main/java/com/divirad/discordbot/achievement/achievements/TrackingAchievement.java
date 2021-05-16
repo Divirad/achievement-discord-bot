@@ -10,4 +10,9 @@ package com.divirad.discordbot.achievement.achievements;
  */
 public class TrackingAchievement extends Achievement {
 
+	public TrackingAchievement(String name, String description) {
+		super(name, description);
+		// TODO Auto-generated constructor stub
+	}
+
 }

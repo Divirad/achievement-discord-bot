@@ -9,4 +9,9 @@ package com.divirad.discordbot.achievement.achievements;
  */
 public class OneTimeAchievement extends Achievement {
 
+	public OneTimeAchievement(String name, String description) {
+		super(name, description);
+		// TODO Auto-generated constructor stub
+	}
+
 }

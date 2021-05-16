@@ -8,11 +8,18 @@ package com.divirad.discordbot.achievement.achievements;
  */
 public abstract class Achievement {
 
-	// Name that will be shown
+	/**
+	 *  Name that will be shown
+	 */
 	private String name;
 	
-	// How to get the achievement
+	/**
+	 *  How to get the achievement
+	 */
 	private String description;
 	
-	
+	public Achievement(String name, String description) {
+		this.name = name;
+		this.description = description;
+	}
 }

@@ -3,10 +3,6 @@ package com.divirad.discordbot.achievement.database;
 import java.util.Date;
 import java.util.List;
 
-import com.divirad.discordbot.achievement.database.MysqlMarker.AutomaticValue;
-
-import net.dv8tion.jda.api.entities.Member;
-
 @MysqlMarker.TableView(isWholeTable = true, tableName = "stizzler")
 public class Stizzler {
 
