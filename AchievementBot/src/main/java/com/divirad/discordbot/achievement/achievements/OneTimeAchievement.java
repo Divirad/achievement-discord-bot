@@ -1,5 +1,7 @@
 package com.divirad.discordbot.achievement.achievements;
 
+import com.divirad.discordbot.achievement.database.AchievementDTO;
+
 /**
  * Class for achievements that are automatically given after a single event occurs
  * 
@@ -9,9 +11,8 @@ package com.divirad.discordbot.achievement.achievements;
  */
 public class OneTimeAchievement extends Achievement {
 
-	public OneTimeAchievement(String name, String description) {
-		super(name, description);
-		// TODO Auto-generated constructor stub
+	public OneTimeAchievement(String name, String description, AchievementDTO db_achievement) {
+		super(name, description, db_achievement);
 	}
 
 }

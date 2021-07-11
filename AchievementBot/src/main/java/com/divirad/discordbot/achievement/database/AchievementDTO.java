@@ -23,7 +23,7 @@ public class AchievementDTO {
 	public enum AchievementType {
 		MANUAL {
 			private Achievement createObject(AchievementDTO a) {
-				return new ManualAchievement(a.name, a.description);
+				return new ManualAchievement(a.name, a.description, a);
 			}
 		},
 		ONETIME,

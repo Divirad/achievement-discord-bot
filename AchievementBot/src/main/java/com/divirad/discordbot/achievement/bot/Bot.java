@@ -20,6 +20,8 @@ public class Bot {
 		builder.setBulkDeleteSplittingEnabled(false);
 		builder.setActivity(Activity.listening("Events"));
 		
+		builder.addEventListeners(new RegisterStizzler());
+		
 		try {
 			builder.build();
 		} catch (LoginException e) {
