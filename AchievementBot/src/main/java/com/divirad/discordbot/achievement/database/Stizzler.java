@@ -11,8 +11,8 @@ public final class Stizzler {
 	
 	public String discord_tag;
 	
-	@MysqlMarker.AutomaticValue
-	public Date stizzler_since;
+//	@MysqlMarker.AutomaticValue
+//	public Date stizzler_since;
 	
 	public Stizzler() {}
 	

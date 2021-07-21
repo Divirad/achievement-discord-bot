@@ -16,14 +16,11 @@ public class RegisterStizzler extends ListenerAdapter {
 
 	@Override
 	public void onReady(ReadyEvent event) {
-		System.out.println("oh, ja moin");
 		for(Guild g : event.getJDA().getGuildCache()) {
 			// Register/Update Guild/Server
 			com.divirad.discordbot.achievement.database.Guild dbGuild = null;
 			if((dbGuild = GuildDao.instance.getById(g.getId())) == null) {
-				dbGuild = new com.divirad.discordbot.achievement.database.Guild();
-				dbGuild.guild_id = g.getId();
-				dbGuild.servername = g.getName();
+				GuildDao.instance.bot_joined_server(g.getId(), g.getName());
 			} else if(dbGuild.servername.equals(g.getName())) {
 				dbGuild.servername = g.getName();
 				GuildDao.instance.updateServername(dbGuild.guild_id, dbGuild.servername);

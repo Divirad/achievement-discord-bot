@@ -105,7 +105,7 @@ public class Dao<T> {
         primary_list = primary_joiner.toString();
         field_update_list = update_joiner.toString();
 
-        if (this.isWholeTable)
+        //if (this.isWholeTable)
             sql_insert = "INSERT INTO " + this.tableName + " " + field_list + " VALUES " + param_list;
         sql_select = "SELECT * FROM " + this.tableName + " WHERE " + primary_list;
         sql_update = "UPDATE " + this.tableName + " SET " + field_update_list + " WHERE " + primary_list;

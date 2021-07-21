@@ -28,5 +28,12 @@ public final class Guild {
 			g.servername = servername;
 			update(g);
 		}
+		
+		public void bot_joined_server(String guild_id, String servername) {
+			Guild g = new Guild();
+			g.guild_id = guild_id;
+			g.servername = servername;
+			insert(g);
+		}
 	}
 }
