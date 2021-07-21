@@ -4,7 +4,7 @@ import com.divirad.discordbot.achievement.achievements.Achievement;
 import com.divirad.discordbot.achievement.achievements.ManualAchievement;
 
 @MysqlMarker.TableView(isWholeTable = true, tableName = "achievement")
-public class AchievementDTO {
+public final class AchievementDTO {
 
 	@MysqlMarker.PrimaryKey
 	public int id;

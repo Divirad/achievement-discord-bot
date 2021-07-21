@@ -1,6 +1,7 @@
 package com.divirad.discordbot.achievement.database;
 
-public class StizzlerRefGuild {
+@MysqlMarker.TableView(isWholeTable = false, tableName = "ref_stizzler_guild")
+public final class StizzlerRefGuild {
 
 	@MysqlMarker.PrimaryKey
 	String uid;

@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 @MysqlMarker.TableView(isWholeTable = true, tableName = "stizzler")
-public class Stizzler {
+public final class Stizzler {
 
 	@MysqlMarker.PrimaryKey
 	public String uid;
@@ -27,6 +27,7 @@ public class Stizzler {
 			Stizzler s = new Stizzler();
 			s.uid = uid;
 			s.discord_tag = discord_tag;
+			System.out.println("Added " + discord_tag);
 			insert(s);
 		}
 		

@@ -1,7 +1,7 @@
 package com.divirad.discordbot.achievement.database;
 
 @MysqlMarker.TableView(isWholeTable = true, tableName = "guild")
-public class Guild {
+public final class Guild {
 
 	@MysqlMarker.PrimaryKey
 	public String guild_id;

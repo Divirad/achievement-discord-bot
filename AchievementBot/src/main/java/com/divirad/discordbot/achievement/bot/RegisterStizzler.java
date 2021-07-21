@@ -16,6 +16,7 @@ public class RegisterStizzler extends ListenerAdapter {
 
 	@Override
 	public void onReady(ReadyEvent event) {
+		System.out.println("oh, ja moin");
 		for(Guild g : event.getJDA().getGuildCache()) {
 			// Register/Update Guild/Server
 			com.divirad.discordbot.achievement.database.Guild dbGuild = null;
