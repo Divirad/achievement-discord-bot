@@ -18,9 +18,9 @@ public class Logger implements DaoListener {
 		this.guild = guild;
 		List<TextChannel> channels = guild.getTextChannelsByName("bot-logs", true);
 		if(channels.size() == 0)
-			throw new IllegalArgumentException("Can't initialize logging for server since no channel named \"bot-logs\" could be found");
+			throw new IllegalArgumentException("Can't initialize logging for server \"" + guild.getName() +"\" since no channel named \"bot-logs\" could be found");
 		if(channels.size() > 1)
-			throw new IllegalArgumentException("Can't initialize logging for server since there are more than one channels with the name \"bot-logs\"");
+			throw new IllegalArgumentException("Can't initialize logging for server \"" + guild.getName() +"\" since there are more than one channels with the name \"bot-logs\"");
 		log_channel = channels.get(0);
 	}
 
