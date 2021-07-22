@@ -1,6 +1,6 @@
 package com.divirad.discordbot.achievement.database;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @MysqlMarker.TableView(isWholeTable = true, tableName = "stizzler")
@@ -27,14 +27,15 @@ public final class Stizzler {
 			Stizzler s = new Stizzler();
 			s.uid = uid;
 			s.discord_tag = discord_tag;
-			System.out.println("Added " + discord_tag);
 			insert(s);
 		}
 		
 		public List<Stizzler> selectAll() {
-			return Database.query("Select * FROM " + 
+			List<Stizzler> result = Database.query("Select * FROM " + 
 									((MysqlMarker.TableView) Stizzler.class.getAnnotations()[0]).tableName()
 								, this::convAllInResultSet);
+			fireRowSelected(new DaoEvent<Stizzler>((ArrayList) result, System.currentTimeMillis(), DaoEvent.SELECT, result.size(), cls));
+			return result;
 		}
 
 		public void updateTag(String uid, String discord_tag) {
