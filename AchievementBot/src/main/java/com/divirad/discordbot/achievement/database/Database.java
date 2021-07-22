@@ -58,24 +58,32 @@ public class Database {
     /**
      * Executes a sql command with no parameter
      * @param sql prepared sql string
+     * 
+     * @return count of rows affected
      */
-    public static void execute(String sql) {
-        execute(sql, ps -> {});
+    public static int execute(String sql) {
+        return execute(sql, ps -> {});
     }
 
     /**
      * Executes a sql command
      * @param sql prepared sql string
      * @param setParams function to set the parameters of the PreparedStatement
+     * 
+     * @return count of rows affected
      */
-    public static void execute(String sql, ISetParams setParams) {
+    public static int execute(String sql, ISetParams setParams) {
+    	int updateCount = -1;
     	try (Connection con = DriverManager.getConnection("jdbc:mysql://" + HOSTNAME + "/" + DATABASE, USERNAME, PASSWORD)) {
         		try (PreparedStatement ps = con.prepareStatement(sql)) {
                 setParams.run(ps);
                 ps.execute();
+                updateCount = ps.getUpdateCount();
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+        	return updateCount;
         }
     }
 

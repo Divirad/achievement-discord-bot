@@ -2,6 +2,8 @@ package com.divirad.discordbot.achievement.bot;
 
 import java.util.List;
 
+import com.divirad.discordbot.achievement.bot.log.Logger;
+import com.divirad.discordbot.achievement.database.Dao;
 import com.divirad.discordbot.achievement.database.Guild.GuildDao;
 import com.divirad.discordbot.achievement.database.Stizzler;
 import com.divirad.discordbot.achievement.database.Stizzler.StizzlerDao;
@@ -17,6 +19,7 @@ public class RegisterStizzler extends ListenerAdapter {
 	@Override
 	public void onReady(ReadyEvent event) {
 		for(Guild g : event.getJDA().getGuildCache()) {
+			GuildDao.addDaoListener(new Logger(g));
 			// Register/Update Guild/Server
 			com.divirad.discordbot.achievement.database.Guild dbGuild = null;
 			if((dbGuild = GuildDao.instance.getById(g.getId())) == null) {

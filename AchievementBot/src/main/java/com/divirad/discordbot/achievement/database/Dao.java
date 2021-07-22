@@ -4,10 +4,17 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.sql.*;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
+
+import javax.swing.event.EventListenerList;
 
 /**
  * Base Dao class.
@@ -106,7 +113,7 @@ public class Dao<T> {
         field_update_list = update_joiner.toString();
 
         //if (this.isWholeTable)
-            sql_insert = "INSERT INTO " + this.tableName + " " + field_list + " VALUES " + param_list;
+        sql_insert = "INSERT INTO " + this.tableName + " " + field_list + " VALUES " + param_list;
         sql_select = "SELECT * FROM " + this.tableName + " WHERE " + primary_list;
         sql_update = "UPDATE " + this.tableName + " SET " + field_update_list + " WHERE " + primary_list;
         sql_replace = "REPLACE INTO " + this.tableName + " " + field_list + " VALUES " + param_list;
@@ -224,6 +231,7 @@ public class Dao<T> {
      */
     protected void insert(T data) {
         Database.execute(sql_insert, ps -> setParams(ps, data, this.notAutomatedKeys, 1));
+        fireRowInserted(new DaoEvent<T>(data, System.currentTimeMillis(), DaoEvent.SINGLE_INSERT, 1, this.cls));
     }
     
     
@@ -241,6 +249,7 @@ public class Dao<T> {
     		for(T t : data)
     			index = setParams(ps, t, this.notAutomatedKeys, index);
     	});
+    	fireRowInserted(new DaoEvent<T>(data, System.currentTimeMillis(), DaoEvent.MULTI_INSERT, data.size(), this.cls));
     }
 
     /**
@@ -254,10 +263,11 @@ public class Dao<T> {
         if (!this.isWholeTable)
             throw new UnsupportedOperationException(
                     "Usage of udpate is not possible: " + this.cls.getName() + " does not represent whole mysql table");
-        Database.execute(sql_update, ps -> {
+        int rows = Database.execute(sql_update, ps -> {
             int nextIndex = setParams(ps, data, this.allFields, 1);
             setParams(ps, data, this.primaryKeys, nextIndex);
         });
+        fireRowUpdated(new DaoEvent<T>(data, System.currentTimeMillis(), DaoEvent.UPDATE, rows, cls));
     }
     
     /**
@@ -269,10 +279,11 @@ public class Dao<T> {
     		if(!this.isWholeTable)
     			throw new UnsupportedOperationException(
     					"Usage of replace is not possible: " + this.cls.getName() + " does not represent whole mysql table");
-    		Database.execute(sql_replace, ps -> {
+    		int rows = Database.execute(sql_replace, ps -> {
     			int nextIndex = setParams(ps, data, this.allFields, 1);
     			setParams(ps, data, this.primaryKeys, nextIndex);
     		});
+    		fireRowReplaced(new DaoEvent<T>(data, System.currentTimeMillis(), DaoEvent.REPLACE, rows, cls));
     }
     
     /**
@@ -284,15 +295,17 @@ public class Dao<T> {
 	    	String sql_multi_replace = new String(sql_replace);
 	    	for(int i = 1; i < data.size(); i++) sql_multi_replace += "," + param_list;
 	    	
-	    	Database.execute(sql_multi_replace, ps -> {
+	    	int rows = Database.execute(sql_multi_replace, ps -> {
 	    		int index = 1;
 	    		for(T t : data)
 	    			index = setParams(ps, t, this.notAutomatedKeys, index);
 	    	});
+	    	fireRowReplaced(new DaoEvent<T>(data, System.currentTimeMillis(), DaoEvent.REPLACE, rows, cls));
     }
     
     protected void delete(T data) {
-    	Database.execute(sql_delete, ps -> setParams(ps, data, primaryKeys, 0));
+    	int rows = Database.execute(sql_delete, ps -> setParams(ps, data, primaryKeys, 0));
+    	fireRowDeleted(new DaoEvent<T>(data, System.currentTimeMillis(), DaoEvent.DELETE, rows, cls));
     }
 
     /**
@@ -303,6 +316,82 @@ public class Dao<T> {
      * @return T object containing the data of the row
      */
     protected T select(T data) {
-        return Database.query(sql_select, ps -> setParams(ps, data, this.primaryKeys, 1), this::convFirstInResultSet);
+    	T t = Database.query(sql_select, ps -> setParams(ps, data, this.primaryKeys, 1), this::convFirstInResultSet);
+    	fireRowUpdated(new DaoEvent<T>(t, System.currentTimeMillis(), DaoEvent.SELECT, (t == null)?0:1, cls));
+    	return t;
+    }
+    
+    
+    
+    
+    
+    
+    
+    //-----------------------------
+    //       Events
+    //-----------------------------
+    protected static EventListenerList listenerList = new EventListenerList();
+    
+    public static void addDaoListener(DaoListener l) {
+    	listenerList.add(DaoListener.class, l);
+    }
+    
+    public static void removeDaoListener(DaoListener l) {
+    	listenerList.remove(DaoListener.class, l);
+    }
+    
+    protected void fireRowInserted(DaoEvent<?> e) {
+    	Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==DaoListener.class) {
+                ((DaoListener)listeners[i+1]).rowInserted(e);
+            }
+        }
+    }
+    
+    protected void fireRowUpdated(DaoEvent<?> e) {
+    	Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==DaoListener.class) {
+                ((DaoListener)listeners[i+1]).rowUpdated(e);
+            }
+        }
+    }
+    
+    protected void fireRowReplaced(DaoEvent<?> e) {
+    	Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==DaoListener.class) {
+                ((DaoListener)listeners[i+1]).rowReplaced(e);
+            }
+        }
+    }
+    
+    protected void fireRowDeleted(DaoEvent<?> e) {
+    	Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==DaoListener.class) {
+                ((DaoListener)listeners[i+1]).rowDeleted(e);
+            }
+        }
+    }
+    
+    protected void fireRowSelected(DaoEvent<?> e) {
+    	Object[] listeners = listenerList.getListenerList();
+        // Process the listeners last to first, notifying
+        // those that are interested in this event
+        for (int i = listeners.length-2; i>=0; i-=2) {
+            if (listeners[i]==DaoListener.class) {
+                ((DaoListener)listeners[i+1]).rowSelected(e);
+            }
+        }
     }
 }
