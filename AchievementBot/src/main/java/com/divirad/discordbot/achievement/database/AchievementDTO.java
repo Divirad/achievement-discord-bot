@@ -12,12 +12,23 @@ public final class AchievementDTO {
 	public String description;
 	public int achievement_type_id;
 	
+	public AchievementDTO() {}
+	
 	public static class AchievementDao extends Dao<AchievementDTO> {
 
+		public static final AchievementDao instance = new AchievementDao();
+		
 		public AchievementDao() {
 			super(AchievementDTO.class);
 		}
 		
+		public AchievementDTO get_by_name(String name) {
+			AchievementDTO a = Database.query("SELECT * FROM " + this.tableName + " WHERE name = ?;", 
+					ps -> ps.setString(1, name),
+					this::convFirstInResultSet);
+			fireRowSelected(new DaoEvent<>(a, System.currentTimeMillis(), DaoEvent.SELECT, 1, this.cls));
+			return a;
+		}
 	}
 	
 	public enum AchievementType {

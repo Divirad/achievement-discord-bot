@@ -21,6 +21,7 @@ public class Bot {
 		builder.setActivity(Activity.listening("Events"));
 		
 		builder.addEventListeners(new RegisterStizzler());
+		builder.addEventListeners(new AdminCommandListener());
 		
 		try {
 			builder.build();

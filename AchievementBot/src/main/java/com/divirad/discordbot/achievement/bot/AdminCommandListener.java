@@ -15,10 +15,9 @@ public class AdminCommandListener extends ListenerAdapter {
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
 		// Admin commands must run through a channel with a specific name
 		if(!event.getChannel().getName().equals("botcommands-admin")) return;
-		
 		Message message = event.getMessage();
-		String message_content = message.getContentDisplay();
-		
+		String message_content = message.getContentRaw();
+
 		// Must start with command prompt >
 		if(!message_content.startsWith(">")) return;
 		message_content = message_content.substring(1);
@@ -29,7 +28,11 @@ public class AdminCommandListener extends ListenerAdapter {
 		    parameters.add(m.group(1));
 		
 		String command = parameters.remove(0);
-		Command.valueOf(command).execute(parameters.toArray(new String[parameters.size()]));
+		try {
+			Command.valueOf(command).execute(parameters.toArray(new String[parameters.size()]), event.getChannel());			
+		} catch(IllegalArgumentException e) {
+			event.getChannel().sendMessage("Command " + command + " does not exist. Use HELP for a list of all available commands").queue();
+		}
 	}
 
 	

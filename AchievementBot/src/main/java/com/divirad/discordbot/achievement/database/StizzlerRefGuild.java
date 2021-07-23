@@ -2,7 +2,7 @@ package com.divirad.discordbot.achievement.database;
 
 import java.sql.Date;
 
-@MysqlMarker.TableView(isWholeTable = false, tableName = "ref_stizzler_guild")
+@MysqlMarker.TableView(isWholeTable = true, tableName = "ref_stizzler_guild")
 public final class StizzlerRefGuild {
 
 	@MysqlMarker.PrimaryKey
