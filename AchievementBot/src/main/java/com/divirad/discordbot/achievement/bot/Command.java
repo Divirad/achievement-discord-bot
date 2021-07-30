@@ -81,8 +81,8 @@ public enum Command {
 
 		@Override
 		public void help(TextChannel source) {
-			// TODO Auto-generated method stub
-			super.help(source);
+			source.sendMessage("Shows a list of discord tags of all users that have been awarded an achievement"
+					+ "\n\nWHOHAS <ACHIEVEMENTNAME>").queue();
 		}
 		
 	},
