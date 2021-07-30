@@ -30,6 +30,12 @@ public final class Stizzler {
 			insert(s);
 		}
 		
+		public Stizzler select_by_id(String uid) {
+			Stizzler s = new Stizzler();
+			s.uid = uid;
+			return select(s);
+		}
+		
 		public List<Stizzler> selectAll() {
 			List<Stizzler> result = Database.query("Select * FROM " + 
 									((MysqlMarker.TableView) Stizzler.class.getAnnotations()[0]).tableName()

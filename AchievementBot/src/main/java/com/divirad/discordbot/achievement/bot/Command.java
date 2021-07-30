@@ -1,13 +1,21 @@
 package com.divirad.discordbot.achievement.bot;
 
+import java.util.ArrayList;
+
 import com.divirad.discordbot.achievement.database.AchievementDTO;
 import com.divirad.discordbot.achievement.database.AchievementDTO.AchievementDao;
+import com.divirad.discordbot.achievement.database.AchievementRefStizzler;
 import com.divirad.discordbot.achievement.database.AchievementRefStizzler.AchievementRefStizzlerDao;
+import com.divirad.discordbot.achievement.database.Stizzler.StizzlerDao;
+import com.divirad.discordbot.achievement.database.StizzlerRefGuild.StizzlerRefGuildDao;
+import com.divirad.discordbot.achievement.lib.CommandAnnotations.AdminOnly;
+import com.divirad.discordbot.achievement.lib.CommandAnnotations.StizzlerOnly;
 
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public enum Command {
 	
+	@AdminOnly
 	GRANT {
 		public void execute(String[] params, TextChannel source) throws ArrayIndexOutOfBoundsException {
 			if(params.length != 2) {
@@ -27,6 +35,62 @@ public enum Command {
 					+ "\n\nSyntax:\n>GRANT <@DISCORDUSER> <ACHIEVEMENTNAME>").queue();
 		}
 	},
+	@AdminOnly
+	CREATE,
+	HOWMANY {
+
+		@Override
+		public void execute(String[] params, TextChannel source) throws ArrayIndexOutOfBoundsException {
+			if(params.length != 1) {
+				source.sendMessage("Invalid argument count for command HOWMANY").queue();
+				HOWMANY.help(source);
+			}
+			int all_stizzler_count = StizzlerRefGuildDao.instance.count_stizzler_on_server(source.getGuild().getId());
+			AchievementDTO a = AchievementDao.instance.get_by_name(params[0]);
+			int stizzler_with_ach_count = AchievementRefStizzlerDao.instance.how_many_have_achievement(a.id);
+			
+			double percent = ((double) stizzler_with_ach_count) / all_stizzler_count * 100;
+			
+			source.sendMessage(percent + "% of users on this server have been awarded the achievement " + a.name).queue();
+		}
+
+		@Override
+		public void help(TextChannel source) {
+			source.sendMessage("Shows how many percent of users have been awarded an achievement"
+				+ "\n\nSyntax:\nHOWMANY <ACHIEVEMENTNAME>").queue();
+		}
+		
+	},
+	WHOHAS {
+
+		@Override
+		public void execute(String[] params, TextChannel source) throws ArrayIndexOutOfBoundsException {
+			if(params.length != 1) {
+				source.sendMessage("Invalid argument count for command WHOHAS").queue();
+				WHOHAS.help(source);
+			}
+			
+			AchievementDTO achievement = AchievementDao.instance.get_by_name(params[0]);
+			ArrayList<AchievementRefStizzler> stizzler_ids = 
+					AchievementRefStizzlerDao.instance.get_by_achievement_id(achievement.id);
+			StringBuilder name_list = new StringBuilder();
+			stizzler_ids.forEach(t -> name_list.append(StizzlerDao.instance.select_by_id(t.stizzler_id).discord_tag + "\n"));
+			
+			source.sendMessage("Following users have been awarded the " + params[0] + " achievement:\n\n" + name_list).queue();
+		}
+
+		@Override
+		public void help(TextChannel source) {
+			// TODO Auto-generated method stub
+			super.help(source);
+		}
+		
+	},
+	@StizzlerOnly
+	MOI,
+	@StizzlerOnly
+	IMNOOB,
+	THEYHAVE,
 	
 	HELP {
 		public void execute(String[] params, TextChannel source) throws ArrayIndexOutOfBoundsException {
@@ -34,6 +98,10 @@ public enum Command {
 			else if(params.length == 1) {
 				try {
 					Command c = Command.valueOf(params[0]);
+					if(c.getClass().isAnnotationPresent(AdminOnly.class))
+						source.sendMessage("!Admin Only!").queue();
+					if(c.getClass().isAnnotationPresent(StizzlerOnly.class))
+						source.sendMessage("!Stizzler Only!");
 					c.help(source);
 				} catch(IllegalArgumentException e) {
 					source.sendMessage("Command " + params[0] + " does not exist. Use HELP for a list of all available commands").queue();

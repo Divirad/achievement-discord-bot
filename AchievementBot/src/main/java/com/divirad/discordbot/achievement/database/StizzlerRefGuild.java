@@ -42,5 +42,13 @@ public final class StizzlerRefGuild {
 			srg.guild_id = guild_id;
 			delete(srg);
 		}
+		
+		public int count_stizzler_on_server(String guild_id) {
+			int res = Database.query("SELECT COUNT(*) FROM " + tableName + " WHERE guild_id = ?", 
+					ps -> ps.setString(1, guild_id),
+					rs -> { rs.next(); return rs.getInt(1); });
+			fireRowSelected(new DaoEvent<>((StizzlerRefGuild) null, System.currentTimeMillis(), DaoEvent.SELECT, 1, this.cls));
+			return res;
+		}
 	}
 }

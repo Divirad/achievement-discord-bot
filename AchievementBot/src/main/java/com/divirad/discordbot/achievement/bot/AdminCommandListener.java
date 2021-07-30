@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.divirad.discordbot.achievement.lib.CommandAnnotations;
+
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -29,9 +31,13 @@ public class AdminCommandListener extends ListenerAdapter {
 		
 		String command = parameters.remove(0);
 		try {
-			Command.valueOf(command).execute(parameters.toArray(new String[parameters.size()]), event.getChannel());			
+			Command c = Command.valueOf(command);
+			if(c.getClass().isAnnotationPresent(CommandAnnotations.StizzlerOnly.class)) throw new UnsupportedOperationException();
+			c.execute(parameters.toArray(new String[parameters.size()]), event.getChannel());			
 		} catch(IllegalArgumentException e) {
 			event.getChannel().sendMessage("Command " + command + " does not exist. Use HELP for a list of all available commands").queue();
+		} catch(UnsupportedOperationException e) {
+			event.getChannel().sendMessage(command + " can not be used in an admin command channel").queue();
 		}
 	}
 
