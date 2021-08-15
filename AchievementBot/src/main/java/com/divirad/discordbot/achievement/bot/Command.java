@@ -164,15 +164,11 @@ public enum Command {
 			TextChannel sourceChannel = event.getChannel();
 			
 			ArrayList<AchievementRefStizzler> their_achievements =
-					AchievementRefStizzlerDao.instance.get_by_stizzler_id(params[0]);
+					AchievementRefStizzlerDao.instance.get_by_stizzler_id(trim_snowflake_id(params[0]));
 			
 			StringBuilder result_list = new StringBuilder();
-			((ArrayList<AchievementDTO>) AchievementDao.instance.get_all()
-					.stream()
-					.filter(p -> !their_achievements.contains(p))
-					.collect(Collectors.toList()))
-					.forEach(t -> result_list.append(t.name + "\n"));
-			System.out.println(params[0]);
+			their_achievements.forEach(t -> result_list.append(AchievementDao.instance.get_by_id(t.achievement_id).name));
+			
 			try {
 				event.getJDA().retrieveUserById(trim_snowflake_id(params[0])).map(User::getName).queue(name -> 
 					sourceChannel.sendMessage(name + " has been awarded the following achievements\n\n" + result_list).queue());
