@@ -32,13 +32,13 @@ public class AdminCommandListener extends ListenerAdapter {
 		String command = parameters.remove(0);
 		try {
 			Command c = Command.valueOf(command);
-			if(c.getClass().isAnnotationPresent(CommandAnnotations.StizzlerOnly.class)) throw new UnsupportedOperationException();
-			c.execute(parameters.toArray(new String[parameters.size()]), event.getChannel());			
+			if(c.getClass().getField(command).isAnnotationPresent(CommandAnnotations.StizzlerOnly.class)) throw new UnsupportedOperationException();
+			c.execute(parameters.toArray(new String[parameters.size()]), event);			
 		} catch(IllegalArgumentException e) {
 			event.getChannel().sendMessage("Command " + command + " does not exist. Use HELP for a list of all available commands").queue();
 		} catch(UnsupportedOperationException e) {
 			event.getChannel().sendMessage(command + " can not be used in an admin command channel").queue();
-		}
+		} catch (NoSuchFieldException e) {} 
 	}
 
 	

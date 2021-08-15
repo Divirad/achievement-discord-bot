@@ -36,8 +36,8 @@ public final class Stizzler {
 			return select(s);
 		}
 		
-		public List<Stizzler> selectAll() {
-			List<Stizzler> result = Database.query("Select * FROM " + 
+		public ArrayList<Stizzler> selectAll() {
+			ArrayList<Stizzler> result = Database.query("Select * FROM " + 
 									((MysqlMarker.TableView) Stizzler.class.getAnnotations()[0]).tableName()
 								, this::convAllInResultSet);
 			fireRowSelected(new DaoEvent<Stizzler>((ArrayList) result, System.currentTimeMillis(), DaoEvent.SELECT, result.size(), cls));

@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.PseudoColumnUsage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -321,6 +322,11 @@ public class Dao<T> {
     	return t;
     }
     
+    protected ArrayList<T> selectAll() {
+    	ArrayList<T> res = Database.query("SELECT * FROM " + this.tableName, this::convAllInResultSet);
+    	fireRowSelected(new DaoEvent<T>(res, System.currentTimeMillis(), DaoEvent.SELECT, res.size(), cls));
+    	return res;
+    }
     
     
     

@@ -49,6 +49,30 @@ public final class AchievementRefStizzler {
 			 fireRowSelected(new DaoEvent<>(res, System.currentTimeMillis(), DaoEvent.SELECT, res.size(), this.cls));
 			 return res;
 		}
+		
+		public ArrayList<AchievementRefStizzler> get_by_stizzler_id(String uid) {
+			ArrayList<AchievementRefStizzler> res = Database.query("SELECT * FROM " + tableName + " WHERE stizzler_id = ?", 
+					ps -> ps.setString(1, uid),
+					this::convAllInResultSet);
+			fireRowSelected(new DaoEvent<>(res, System.currentTimeMillis(), DaoEvent.SELECT, res.size(), this.cls));
+			return res;
+		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof AchievementDTO) {
+			AchievementDTO a = (AchievementDTO) o;
+			return this.achievement_id == a.id;
+		} else if(o instanceof Stizzler) {
+			Stizzler s = (Stizzler) o;
+			return this.stizzler_id == s.uid;
+		} else if(o instanceof AchievementRefStizzler) {
+			AchievementRefStizzler ars = (AchievementRefStizzler) o;
+			return this.achievement_id == ars.achievement_id &&
+					this.stizzler_id == ars.stizzler_id &&
+					this.achieved_date == ars.achieved_date;
+		} else return false;
 	}
 	
 }
