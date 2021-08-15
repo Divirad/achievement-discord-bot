@@ -68,5 +68,16 @@ public final class AchievementDTO {
 	public Achievement createAchievementObject() {
 		return AchievementType.values()[achievement_type_id - 1].createObject(this);
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof AchievementDTO) {
+			AchievementDTO a = (AchievementDTO) o;
+			return this.id == a.id;
+		} else if(o instanceof AchievementRefStizzler) {
+			AchievementRefStizzler ars = (AchievementRefStizzler) o;
+			return this.id == ars.achievement_id;
+		} else return false;
+	}
 
 }

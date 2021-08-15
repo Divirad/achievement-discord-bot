@@ -137,7 +137,7 @@ public enum Command {
 		public void execute(String[] params, GuildMessageReceivedEvent event) throws ArrayIndexOutOfBoundsException {
 			super.execute(params, event);
 			TextChannel sourceChannel = event.getChannel();
-			
+
 			ArrayList<AchievementRefStizzler> my_achievements = 
 					AchievementRefStizzlerDao.instance.get_by_stizzler_id(event.getAuthor().getId());
 			
@@ -148,7 +148,7 @@ public enum Command {
 				.collect(Collectors.toList()))
 				.forEach(t -> result_list.append(t.name + "\n"));
 			
-			sourceChannel.sendMessage(event.getAuthor().getAsMention() + ", you're missing the following achievements\n\n" + result_list);			
+			sourceChannel.sendMessage(event.getAuthor().getAsMention() + ", you're missing the following achievements\n\n" + result_list).queue();			
 		}
 
 		@Override
