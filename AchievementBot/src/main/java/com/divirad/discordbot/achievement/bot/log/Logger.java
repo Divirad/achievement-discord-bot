@@ -26,24 +26,26 @@ public class Logger implements DaoListener {
 
 	@Override
 	public void rowInserted(DaoEvent<?> e) {
-		log_channel.sendMessage(e.rows_affected + " rows inserted into table " + ((MysqlMarker.TableView) e.cls.getAnnotations()[0]).tableName());
+		log_channel.sendMessage(e.rows_affected + " rows inserted into table " + ((MysqlMarker.TableView) e.cls.getAnnotations()[0]).tableName()).queue();
 	}
 
 	@Override
 	public void rowDeleted(DaoEvent<?> e) {
-		log_channel.sendMessage(e.rows_affected + " rows deleted from table " + ((MysqlMarker.TableView) e.cls.getAnnotations()[0]).tableName());
+		log_channel.sendMessage(e.rows_affected + " rows deleted from table " + ((MysqlMarker.TableView) e.cls.getAnnotations()[0]).tableName()).queue();
 	}
 
 	@Override
 	public void rowUpdated(DaoEvent<?> e) {
-		log_channel.sendMessage(e.rows_affected + " rows updated in table " + ((MysqlMarker.TableView) e.cls.getAnnotations()[0]).tableName());
+		log_channel.sendMessage(e.rows_affected + " rows updated in table " + ((MysqlMarker.TableView) e.cls.getAnnotations()[0]).tableName()).queue();
 	}
 
 	@Override
-	public void rowSelected(DaoEvent<?> e) {}
+	public void rowSelected(DaoEvent<?> e) {
+		log_channel.sendMessage(e.rows_affected + " rows selected from table " + ((MysqlMarker.TableView) e.cls.getAnnotations()[0]).tableName()).queue();
+	}
 
 	@Override
 	public void rowReplaced(DaoEvent<?> e) {
-		log_channel.sendMessage(e.rows_affected + " rows replaced in table " + ((MysqlMarker.TableView) e.cls.getAnnotations()[0]).tableName());
+		log_channel.sendMessage(e.rows_affected + " rows replaced in table " + ((MysqlMarker.TableView) e.cls.getAnnotations()[0]).tableName()).queue();
 	}
 }
