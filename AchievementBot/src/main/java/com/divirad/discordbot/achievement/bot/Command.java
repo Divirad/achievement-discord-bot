@@ -13,6 +13,7 @@ import com.divirad.discordbot.achievement.lib.CommandAnnotations.AdminOnly;
 import com.divirad.discordbot.achievement.lib.CommandAnnotations.StizzlerOnly;
 
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public enum Command {
@@ -26,7 +27,7 @@ public enum Command {
 			AchievementDTO a = AchievementDao.instance.get_by_name(params[1]);
 			if(a.achievement_type_id != 1)
 				throw new IllegalArgumentException("Can only manually award achievements with type \"manual\n");
-			AchievementRefStizzlerDao.instance.award(params[0].substring(3, params[0].length() - 1), a.id);
+			AchievementRefStizzlerDao.instance.award(trim_snowflake_id(params[0]), a.id);
 			
 		}
 		
@@ -157,7 +158,36 @@ public enum Command {
 		}
 		
 	},
-	THEYHAVE(1),
+	THEYHAVE(1) {
+		public void execute(String[] params, GuildMessageReceivedEvent event) throws ArrayIndexOutOfBoundsException {
+			super.execute(params, event);
+			TextChannel sourceChannel = event.getChannel();
+			
+			ArrayList<AchievementRefStizzler> their_achievements =
+					AchievementRefStizzlerDao.instance.get_by_stizzler_id(params[0]);
+			
+			StringBuilder result_list = new StringBuilder();
+			((ArrayList<AchievementDTO>) AchievementDao.instance.get_all()
+					.stream()
+					.filter(p -> !their_achievements.contains(p))
+					.collect(Collectors.toList()))
+					.forEach(t -> result_list.append(t.name + "\n"));
+			System.out.println(params[0]);
+			try {
+				event.getJDA().retrieveUserById(trim_snowflake_id(params[0])).map(User::getName).queue(name -> 
+					sourceChannel.sendMessage(name + " has been awarded the following achievements\n\n" + result_list).queue());
+				
+			}catch(IllegalArgumentException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		public void help(GuildMessageReceivedEvent event) {
+			event.getChannel().sendMessage("Lists all achievements that a user has been awarded"
+					+ "\n\nSyntax:\n>" + this.name() + " <@DISCORDUSER>").queue();
+		}
+	},
 	
 	HELP (-1){
 		public void execute(String[] params, GuildMessageReceivedEvent event) throws ArrayIndexOutOfBoundsException {
@@ -220,5 +250,17 @@ public enum Command {
 		int supposed_param_count = this.param_count;
 		if(supposed_param_count >= 0 && supposed_param_count != params.length) return false;
 		else return true;
+	}
+	
+	/**
+	 * Trims a snowflake id to only the long id
+	 * 
+	 * e.g. getting a mention from raw message content looks like this <code><@!192662327751868416></code>
+	 * This trims away the &lt;@! and the &gt;
+	 * @param snowflake_id full snowflake id
+	 * @return trimmed id
+	 */
+	private static String trim_snowflake_id(String snowflake_id) {
+		return snowflake_id.substring(3, snowflake_id.length() - 1);
 	}
 }
