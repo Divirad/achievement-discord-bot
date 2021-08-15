@@ -118,7 +118,7 @@ public enum Command {
 			ArrayList<AchievementRefStizzler> achievement_ids =
 					AchievementRefStizzlerDao.instance.get_by_stizzler_id(event.getAuthor().getId());
 			StringBuilder achievement_list = new StringBuilder();
-			achievement_ids.forEach(t -> achievement_list.append(AchievementDao.instance.get_by_id(t.achievement_id)));
+			achievement_ids.forEach(t -> achievement_list.append(AchievementDao.instance.get_by_id(t.achievement_id).name));
 			
 			sourceChannel.sendMessage(event.getAuthor().getAsMention() + ", you have been awarded the following achievements:\n\n" + achievement_list).queue();
 		}
