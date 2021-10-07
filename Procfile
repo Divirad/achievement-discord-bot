@@ -1,1 +1,1 @@
-Worker: java src/main/java/com/divirad/discordbot/achievement/bot/Bot.java
+Worker: java target/classes/com/divirad/discordbot/achievement/bot/Bot
