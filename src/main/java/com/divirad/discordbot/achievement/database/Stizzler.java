@@ -1,7 +1,6 @@
 package com.divirad.discordbot.achievement.database;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @MysqlMarker.TableView(isWholeTable = true, tableName = "stizzler")
 public final class Stizzler {
@@ -36,6 +35,7 @@ public final class Stizzler {
 			return select(s);
 		}
 		
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		public ArrayList<Stizzler> selectAll() {
 			ArrayList<Stizzler> result = Database.query("Select * FROM " + 
 									((MysqlMarker.TableView) Stizzler.class.getAnnotations()[0]).tableName()
