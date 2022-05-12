@@ -6,12 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.divirad.discordbot.achievement.bot.Constants;
+
 public class Database {
 	
-	private final static String HOSTNAME = "remotemysql.com";
-	private final static String DATABASE = "gWnxOjwv1z";
-	private final static String USERNAME = "gWnxOjwv1z";
-	private final static String PASSWORD = "TnfbGytEwf";
+	private final static String HOSTNAME = Constants.DATABASE_HOST;
+	private final static String DATABASE = Constants.DATABASE_NAME;
+	private final static String USERNAME = Constants.DATABASE_USERNAME;
+	private final static String PASSWORD = Constants.DATABASE_PASSWORD;
 	private final static String PARAMS	 = "useLegacyDatetimeCode=false&serverTimezone=UTC";
 	//private final static String PARAMS	 = "";
 	
