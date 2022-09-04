@@ -49,7 +49,7 @@ public enum Command {
 				AchievementDao.instance.create(params[1], params[2], Integer.parseInt(params[0]));
 				break;
 			default: 
-				sourceChannel.sendMessage("Achievement Type " + params[0] + " not implemented in this version");
+				sourceChannel.sendMessage("Achievement Type " + params[0] + " not implemented in this version").queue();
 			}
 			
 		}
@@ -57,7 +57,7 @@ public enum Command {
 		@Override
 		public void help(GuildMessageReceivedEvent event) {
 			event.getChannel().sendMessage("Creates a new achievement. Only manual implemented in this version"
-					+ "\n\nSyntax: >" + this.name() + " <ACHIEVEMENTTYPE (1 - Manual, 2 - Onetime, 3 - Tracking)> <ACHIEVEMENTNAME> <ACHIEVEMENTDESCRIPTION>");
+					+ "\n\nSyntax: >" + this.name() + " <ACHIEVEMENTTYPE (1 - Manual, 2 - Onetime, 3 - Tracking)> <ACHIEVEMENTNAME> <ACHIEVEMENTDESCRIPTION>").queue();
 		}
 		
 	},
@@ -197,7 +197,7 @@ public enum Command {
 					if(c.getClass().isAnnotationPresent(AdminOnly.class))
 						sourceChannel.sendMessage("!Admin Only!").queue();
 					if(c.getClass().isAnnotationPresent(StizzlerOnly.class))
-						sourceChannel.sendMessage("!Stizzler Only!");
+						sourceChannel.sendMessage("!Stizzler Only!").queue();
 					c.help(event);
 				} catch(IllegalArgumentException e) {
 					sourceChannel.sendMessage("Command " + params[0] + " does not exist. Use HELP for a list of all available commands").queue();
