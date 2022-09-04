@@ -15,12 +15,10 @@ public class AdminCommandListener extends ListenerAdapter {
 
 	@Override
 	public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-		System.out.println("Message received");
 		// Admin commands must run through a channel with a specific name
 		if(!event.getChannel().getName().equals("botcommands-admin")) return;
 		Message message = event.getMessage();
 		String message_content = message.getContentRaw();
-		System.out.println("Content: " + message.getContentRaw());
 
 		// Must start with command prompt >
 		if(!message_content.startsWith(">")) return;
